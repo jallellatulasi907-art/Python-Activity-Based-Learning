@@ -1,107 +1,139 @@
+#algorithm
 
-def retail_billing():
-    print("=" * 60)
-    print("             RETAIL BILLING SYSTEM")
-    print("=" * 60)
+1. Start the program.
+2. Input the number of products.
+3. For each product, enter its name, price, quantity, and category.
+4. Calculate the subtotal for each product.
+5. Apply category-specific tax rates.
+6. Calculate the total bill before discounts.
+7. Apply threshold discounts and maximum concession limits.
+8. Calculate the final payable amount.
+9. Display the itemized invoice with taxes and discounts.
+10. Stop the program.
 
-    # Category-specific tax rates (illustrative)
-    tax_rates = {
-        "food": 0.05,
-        "clothing": 0.05,
-        "electronics": 0.18,
-        "other": 0.12
-    }
+#flow chart
 
-    # Discount policy
-    discount_threshold = 5000
-    discount_rate = 0.10
-    max_concession = 1000
+              ( START )
+                  |
+                  v
+          Input Number of Products
+                  |
+                  v
+          Enter Product Details
+       (Name, Price, Quantity, Category)
+                  |
+                  v
+             < Details Valid? >
+               /          \
+             No            Yes
+             |              |
+             v              v
+        Print Error    Calculate Subtotal
+             |         and Category Tax
+             v              |
+          ( STOP )          v
+                     Process All Products
+                             |
+                             v
+                     Calculate Total Bill
+                             |
+                             v
+                     < Bill >= 5000? >
+                       /          \
+                     Yes           No
+                      |             |
+                      v             v
+                 Apply 10%     < Bill >= 2000? >
+                                /          \
+                              Yes           No
+                               |             |
+                               v             v
+                           Apply 5%     No Discount
+                               \             /
+                                v           v
+                         Apply Maximum Discount
+                                  |
+                                  v
+                         Calculate Final Bill
+                                  |
+                                  v
+                         Display Itemized Invoice
+                                  |
+                                  v
+                               ( STOP )    
+#code
 
-    try:
-        n = int(input("Enter number of products: "))
 
-        if n <= 0:
-            print("Error: Number of products must be positive.")
-            return
+n = int(input("Enter number of products: "))
 
-        products = []
-        subtotal = 0
-        total_tax = 0
+subtotal = 0
+tax_total = 0
+items = []
 
-        for i in range(n):
-            print(f"\nProduct {i + 1}")
+if n <= 0:
+    print("Invalid number of products")
+else:
+    for i in range(n):
+        print(f"\nProduct {i+1}")
+        name = input("Enter product name: ")
+        price = float(input("Enter unit price: "))
+        qty = int(input("Enter quantity: "))
+        category = input("Category (food/electronics): ").lower()
 
-            name = input("Enter product name: ")
-            category = input(
-                "Enter category (food/clothing/electronics/other): "
-            ).strip().lower()
+        if price < 0 or qty <= 0 or category not in ["food", "electronics"]:
+            print("Invalid product details")
+            break
 
-            if category not in tax_rates:
-                print("Invalid category. Please try again.")
-                return
+        amount = price * qty
+        tax_rate = 5 if category == "food" else 18
+        tax = amount * tax_rate / 100
 
-            price = float(input("Enter unit price (Rs.): "))
-            quantity = int(input("Enter quantity: "))
+        subtotal += amount
+        tax_total += tax
+        items.append((name, qty, amount, tax))
 
-            if price < 0 or quantity <= 0:
-                print("Error: Price cannot be negative and "
-                      "quantity must be positive.")
-                return
+    if len(items) == n:
+        total = subtotal + tax_total
 
-            amount = price * quantity
-            tax = amount * tax_rates[category]
-
-            products.append({
-                "name": name,
-                "category": category,
-                "price": price,
-                "quantity": quantity,
-                "amount": amount,
-                "tax_rate": tax_rates[category],
-                "tax": tax
-            })
-
-            subtotal += amount
-            total_tax += tax
-
-        # Apply threshold discount to the subtotal
-        if subtotal >= discount_threshold:
-            discount = subtotal * discount_rate
-            discount = min(discount, max_concession)
+        if total >= 5000:
+            discount = total * 0.10
+        elif total >= 2000:
+            discount = total * 0.05
         else:
             discount = 0
 
-        # Calculate final bill
-        final_amount = subtotal - discount + total_tax
+        discount = min(discount, 1000)
+        final = total - discount
 
-        # Display itemized invoice
-        print("\n" + "=" * 85)
-        print("                         ITEMIZED INVOICE")
-        print("=" * 85)
-        print(f"{'Product':<16}{'Category':<15}{'Qty':>5}"
-              f"{'Price':>10}{'Amount':>12}{'Tax':>10}")
-        print("-" * 85)
+        print("\n--- ITEMIZED INVOICE ---")
+        for name, qty, amount, tax in items:
+            print(f"{name}: Qty={qty}, Amount=Rs.{amount:.2f}, Tax=Rs.{tax:.2f}")
 
-        for p in products:
-            print(
-                f"{p['name']:<16}"
-                f"{p['category']:<15}"
-                f"{p['quantity']:>5}"
-                f"{p['price']:>10.2f}"
-                f"{p['amount']:>12.2f}"
-                f"{p['tax']:>10.2f}"
-            )
+        print(f"Subtotal: Rs.{subtotal:.2f}")
+        print(f"Total Tax: Rs.{tax_total:.2f}")
+        print(f"Discount: Rs.{discount:.2f}")
+        print(f"Final Bill: Rs.{final:.2f}")
 
-        print("-" * 85)
-        print(f"{'Subtotal:':>65} Rs. {subtotal:>10.2f}")
-        print(f"{'Discount:':>65} Rs. {discount:>10.2f}")
-        print(f"{'Total Tax:':>65} Rs. {total_tax:>10.2f}")
-        print("-" * 85)
-        print(f"{'FINAL AMOUNT:':>65} Rs. {final_amount:>10.2f}")
-        print("=" * 85)
+#sample output
 
-    except ValueError:
-        print("Error: Please enter valid numeric values.")
+Enter number of products: 2
 
+Product 1
+Enter product name: Rice
+Enter unit price: 1000
+Enter quantity: 2
+Category (food/electronics): food
 
-retail_billing()
+Product 2
+Enter product name: Headphones
+Enter unit price: 2000
+Enter quantity: 2
+Category (food/electronics): electronics
+
+--- ITEMIZED INVOICE ---
+Rice: Qty=2, Amount=Rs.2000.00, Tax=Rs.100.00
+Headphones: Qty=2, Amount=Rs.4000.00, Tax=Rs.720.00
+Subtotal: Rs.6000.00
+Total Tax: Rs.820.00
+Discount: Rs.682.00
+Final Bill: Rs.6138.00
