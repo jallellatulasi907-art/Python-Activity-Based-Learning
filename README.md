@@ -1,16 +1,20 @@
-# Python-Activity-Based-Learning
-this is used to python activity based learning
-Name:Jallella.Tulasi
-Rollnumber:26001463
-Class:CSD-2
-Programms:
-13.ATM transaction sequence simulation.
-12.Attendence recovery computation.
-9.Multi-currency travel budget analysis.
-5. Multi-Plan Telecommunications Cost Optimization.
-4.Employee payroll and deduction analysis.
-8.Manufacturing cost and profitability analysis.
-6.Railway fare and reservation calculator.
-11.Examination result and grace-mark validation.
-7. Retail Billing with Multiple Discount Rules.
-1. University Scholarship Allocation.
+# Case Studies
+
+## Student Details
+
+- **Name:** Jallella.Tulasi
+- **Roll Number:** 26001463
+- **Class:** CSD-2
+
+## List of Case Studies
+
+1. **Case Study 13:** ATM Transaction Sequence Simulation
+2. **Case Study 12:** Attendance Recovery Computation
+3. **Case Study 9:** Multi-Currency Travel Budget Analysis
+4. **Case Study 5:** Multi-Plan Telecommunications Cost Optimization
+5. **Case Study 4:** Employee Payroll and Deduction Analysis
+6. **Case Study 8:** Manufacturing Cost and Profitability Analysis
+7. **Case Study 6:** Railway Fare and Reservation Calculator
+8. **Case Study 11:** Examination Result and Grace-Mark Validation
+9. **Case Study 7:** Retail Billing with Multiple Discount Rules
+10. **Case Study 1:** University Scholarship Allocation
