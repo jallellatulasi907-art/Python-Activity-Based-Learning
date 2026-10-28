@@ -1,120 +1,127 @@
+#algorithm
 
-def examination_result():
-    print("=" * 60)
-    print("       EXAMINATION RESULT AND GRACE-MARK SYSTEM")
-    print("=" * 60)
+1. Start the program.
+2. Input the number of subjects and maximum marks per subject.
+3. Enter the marks obtained in each subject.
+4. Check whether the marks are valid.
+5. Apply the subject-wise pass criteria.
+6. If a student fails by a small margin, apply the specified grace marks.
+7. Ensure that final marks do not exceed maximum marks.
+8. Calculate total marks and percentage.
+9. Display the final result and classification.
+10. Stop the program.
 
-    try:
-        student_name = input("Enter student name: ")
-        roll_no = input("Enter roll number: ")
-        n = int(input("Enter number of subjects: "))
+#flow chart
 
-        if n <= 0:
-            print("Error: Number of subjects must be positive.")
-            return
+              ( START )
+                  |
+                  v
+        Input Number of Subjects
+                  |
+                  v
+          Input Subject Marks
+                  |
+                  v
+             < Marks Valid? >
+              /          \
+            No            Yes
+            |              |
+            v              v
+       Print Error    < Marks < Pass Mark? >
+            |             /          \
+            v           Yes           No
+         ( STOP )        |             |
+                         v             |
+                 < Within Grace Limit? >
+                    /          \
+                  Yes           No
+                   |             |
+                   v             v
+             Add Grace Marks  Keep Marks
+                   \             /
+                    v           v
+              Check All Subjects
+                    |
+                    v
+              Calculate Total
+              and Percentage
+                    |
+                    v
+              < Any Subject Fail? >
+                  /          \
+                Yes           No
+                 |             |
+                 v             v
+             Print FAIL   Determine Class
+                 \             /
+                  v           v
+                Display Result
+                     |
+                     v
+                  ( STOP )
 
-        max_marks = float(input("Enter maximum marks per subject: "))
-        pass_marks = float(input("Enter minimum passing marks: "))
-        grace_limit = int(input("Enter maximum grace marks per subject: "))
-        total_grace_limit = int(input("Enter total grace marks allowed: "))
+#code
 
-        if (max_marks <= 0 or pass_marks < 0
-                or pass_marks > max_marks
-                or grace_limit < 0 or total_grace_limit < 0):
-            print("Error: Invalid examination policy.")
-            return
 
-        subjects = []
-        total_marks = 0
-        total_maximum = n * max_marks
-        grace_used = 0
+n = int(input("Enter number of subjects: "))
+maximum = 100
+pass_mark = 35
+grace_limit = 5
 
-        for i in range(n):
-            print(f"\nSubject {i + 1}")
-            subject_name = input("Enter subject name: ")
-            marks = float(input("Enter marks obtained: "))
+marks = []
+final_marks = []
+failed = 0
 
-            if marks < 0 or marks > max_marks:
-                print(
-                    f"Error: Marks must be between 0 and {max_marks}."
-                )
-                return
+if n <= 0:
+    print("Invalid number of subjects")
+else:
+    for i in range(n):
+        m = int(input(f"Enter marks in subject {i+1}: "))
 
-            # Calculate grace marks needed to pass this subject
-            shortage = max(0, pass_marks - marks)
+        if m < 0 or m > maximum:
+            print("Invalid marks")
+            break
 
-            # Apply grace only if shortage is within the subject limit
-            remaining_grace = max(0, total_grace_limit - grace_used)
+        if m < pass_mark and pass_mark - m <= grace_limit:
+            m = pass_mark
+            print("Grace marks applied")
 
-            if shortage > 0 and shortage <= grace_limit:
-                grace = min(shortage, remaining_grace)
-            else:
-                grace = 0
+        final_marks.append(m)
 
-            # Do not award more than the marks needed to pass
-            grace = min(grace, max_marks - marks)
+        if m < pass_mark:
+            failed += 1
 
-            final_marks = marks + grace
-            grace_used += grace
+    if len(final_marks) == n:
+        total = sum(final_marks)
+        percentage = total / (n * maximum) * 100
 
-            passed = final_marks >= pass_marks
+        print("\n--- EXAM RESULT ---")
+        print("Final Marks:", final_marks)
+        print("Total Marks:", total)
+        print(f"Percentage: {percentage:.2f}%")
 
-            subjects.append({
-                "name": subject_name,
-                "original": marks,
-                "grace": grace,
-                "final": final_marks,
-                "passed": passed
-            })
-
-            total_marks += final_marks
-
-        # Determine overall result
-        all_passed = all(subject["passed"] for subject in subjects)
-        percentage = (total_marks / total_maximum) * 100
-
-        if not all_passed:
-            classification = "FAIL"
+        if failed > 0:
+            print("Result: FAIL")
         elif percentage >= 75:
-            classification = "DISTINCTION"
+            print("Classification: Distinction")
         elif percentage >= 60:
-            classification = "FIRST CLASS"
+            print("Classification: First Class")
         elif percentage >= 50:
-            classification = "SECOND CLASS"
+            print("Classification: Second Class")
         else:
-            classification = "PASS"
+            print("Classification: Pass")
 
-        # Display result
-        print("\n" + "=" * 75)
-        print("                    EXAMINATION RESULT")
-        print("=" * 75)
-        print(f"Student Name: {student_name}")
-        print(f"Roll Number : {roll_no}")
-        print("-" * 75)
+#sample output
 
-        print(f"{'Subject':<20}{'Original':>12}{'Grace':>10}"
-              f"{'Final':>12}{'Result':>12}")
-        print("-" * 75)
+Enter number of subjects: 4
+Enter marks in subject 1: 80
+Enter marks in subject 2: 33
+Grace marks applied
+Enter marks in subject 3: 65
+Enter marks in subject 4: 72
 
-        for subject in subjects:
-            status = "PASS" if subject["passed"] else "FAIL"
-            print(
-                f"{subject['name']:<20}"
-                f"{subject['original']:>12.2f}"
-                f"{subject['grace']:>10.2f}"
-                f"{subject['final']:>12.2f}"
-                f"{status:>12}"
-            )
-
-        print("-" * 75)
-        print(f"Total Marks       : {total_marks:.2f} / {total_maximum:.2f}")
-        print(f"Percentage        : {percentage:.2f}%")
-        print(f"Grace Marks Used  : {grace_used}")
-        print(f"Overall Result    : {classification}")
-        print("=" * 75)
-
-    except ValueError:
-        print("Error: Please enter valid numeric values.")
-
-
-examination_result()
+--- EXAM RESULT ---
+Final Marks: [80, 35, 65, 72]
+Total Marks: 252
+Percentage: 63.00%
+Classification: First Class
