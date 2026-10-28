@@ -1,127 +1,121 @@
+#algorithm
 
-def atm_simulation():
-    print("=" * 55)
-    print("          ATM TRANSACTION SIMULATION")
-    print("=" * 55)
+1.Start the program.
+2.Initialize the ATM balance to ₹5000.
+3.Set the maximum withdrawal limit to ₹2000 per transaction.
+4.Enter the number of transactions.
+5.For each transaction, choose Deposit or Withdrawal.
+6.If Deposit is selected, enter the amount and add it to the balance if the amount is valid.
+7.If Withdrawal is selected, check whether the amount is valid, within the withdrawal limit, and less than or equal to the available balance.
+8.Reject invalid transactions and display an appropriate message.
+9.Display the transaction summary and final balance.
+10.Stop the program.
+#flowchart
+          ( START )
+               |
+               v
+   Initialize Balance = 5000
+      Withdrawal Limit = 2000
+               |
+               v
+   Enter Transaction Type & Amount
+               |
+               v
+       < Amount Valid? >
+          /          \
+        No            Yes
+        |              |
+        v              v
+ Reject Transaction  < Transaction Type? >
+                      /             \
+                  Deposit         Withdraw
+                     |                |
+                     v                v
+               Add Amount       Check Limit
+               to Balance       and Balance
+                     |                |
+                     v                v
+                     |         < Valid Withdrawal? >
+                     |             /         \
+                     |           No           Yes
+                     |            |             |
+                     |            v             v
+                     |       Reject         Deduct Amount
+                     |      Withdrawal      from Balance
+                     |            |             |
+                     v            v             v
+                 Display Transaction Summary
+                    and Final Balance
+                           |
+                           v
+                         ( STOP )
+#code
 
-    try:
-        balance = float(input("Enter initial account balance (Rs.): "))
-        withdrawal_limit = float(
-            input("Enter maximum withdrawal per transaction (Rs.): ")
-        )
-        daily_limit = float(
-            input("Enter daily withdrawal limit (Rs.): ")
-        )
-        n = int(input("Enter number of transactions: "))
+balance = 5000
+limit = 2000
+transactions = []
 
-        if balance < 0 or withdrawal_limit <= 0 or daily_limit <= 0:
-            print("Error: Invalid balance or withdrawal limits.")
-            return
+n = int(input("Enter number of transactions: "))
 
-        if n <= 0:
-            print("Error: Number of transactions must be positive.")
-            return
+for i in range(n):
+    print("\n1. Deposit")
+    print("2. Withdraw")
+    choice = int(input("Enter choice: "))
+    amount = float(input("Enter amount: "))
 
-        initial_balance = balance
-        total_deposits = 0
-        total_withdrawals = 0
-        daily_withdrawals = 0
-        successful = 0
-        rejected = 0
-        transactions = []
+    if amount <= 0:
+        print("Invalid amount")
+        transactions.append("Rejected: Invalid amount")
 
-        for i in range(n):
-            print(f"\nTransaction {i + 1}")
-            transaction_type = input(
-                "Enter transaction type (deposit/withdraw): "
-            ).strip().lower()
+    elif choice == 1:
+        balance += amount
+        print("Deposit successful")
+        transactions.append(f"Deposit: Rs.{amount}")
 
-            try:
-                amount = float(input("Enter amount (Rs.): "))
-            except ValueError:
-                print("Invalid amount. Transaction rejected.")
-                rejected += 1
-                transactions.append(
-                    ("Invalid amount", 0, "Rejected", balance)
-                )
-                continue
+    elif choice == 2:
+        if amount > limit:
+            print("Withdrawal limit exceeded")
+            transactions.append("Rejected: Limit exceeded")
+        elif amount > balance:
+            print("Insufficient balance")
+            transactions.append("Rejected: Insufficient balance")
+        else:
+            balance -= amount
+            print("Withdrawal successful")
+            transactions.append(f"Withdrawal: Rs.{amount}")
 
-            # Validate transaction amount
-            if amount <= 0:
-                print("Rejected: Amount must be greater than zero.")
-                rejected += 1
-                transactions.append(
-                    (transaction_type, amount, "Rejected", balance)
-                )
-                continue
+    else:
+        print("Invalid choice")
+        transactions.append("Rejected: Invalid choice")
 
-            if transaction_type == "deposit":
-                balance += amount
-                total_deposits += amount
-                successful += 1
-                status = "Successful"
+print("\n--- Transaction Summary ---")
+for t in transactions:
+    print(t)
 
-            elif transaction_type == "withdraw":
-                if amount > withdrawal_limit:
-                    print("Rejected: Per-transaction withdrawal limit exceeded.")
-                    rejected += 1
-                    status = "Rejected"
+print("Final Balance: Rs.", balance)
+#sample output
+Enter number of transactions: 3
 
-                elif daily_withdrawals + amount > daily_limit:
-                    print("Rejected: Daily withdrawal limit exceeded.")
-                    rejected += 1
-                    status = "Rejected"
+1. Deposit
+2. Withdraw
+Enter choice: 1
+Enter amount: 1000
+Deposit successful
 
-                elif amount > balance:
-                    print("Rejected: Insufficient account balance.")
-                    rejected += 1
-                    status = "Rejected"
+1. Deposit
+2. Withdraw
+Enter choice: 2
+Enter amount: 2000
+Withdrawal successful
 
-                else:
-                    balance -= amount
-                    total_withdrawals += amount
-                    daily_withdrawals += amount
-                    successful += 1
-                    status = "Successful"
+1. Deposit
+2. Withdraw
+Enter choice: 2
+Enter amount: 3000
+Withdrawal limit exceeded
 
-            else:
-                print("Rejected: Invalid transaction type.")
-                rejected += 1
-                status = "Rejected"
-
-            transactions.append(
-                (transaction_type, amount, status, balance)
-            )
-
-            print(f"Transaction Status: {status}")
-            print(f"Current Balance: Rs. {balance:.2f}")
-
-        # Transaction summary
-        print("\n" + "=" * 75)
-        print("                  ATM TRANSACTION SUMMARY")
-        print("=" * 75)
-        print(f"{'Type':<18}{'Amount':>14}{'Status':>16}{'Balance':>20}")
-        print("-" * 75)
-
-        for transaction_type, amount, status, current_balance in transactions:
-            print(
-                f"{transaction_type:<18}"
-                f"{amount:>14.2f}"
-                f"{status:>16}"
-                f"{current_balance:>20.2f}"
-            )
-
-        print("-" * 75)
-        print(f"Initial Balance     : Rs. {initial_balance:.2f}")
-        print(f"Total Deposits      : Rs. {total_deposits:.2f}")
-        print(f"Total Withdrawals   : Rs. {total_withdrawals:.2f}")
-        print(f"Successful          : {successful}")
-        print(f"Rejected            : {rejected}")
-        print(f"Final Balance       : Rs. {balance:.2f}")
-        print("=" * 75)
-
-    except ValueError:
-        print("Error: Please enter valid numeric values.")
-
-
-atm_simulation()
+--- Transaction Summary ---
+Deposit: Rs.1000.0
+Withdrawal: Rs.2000.0
+Rejected: Limit exceeded
+Final Balance: Rs. 4000.0
