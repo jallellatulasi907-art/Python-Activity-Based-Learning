@@ -1,121 +1,107 @@
+#algorithm
 
-def travel_budget_analysis():
-    print("=" * 60)
-    print("       MULTI-CURRENCY TRAVEL BUDGET ANALYSIS")
-    print("=" * 60)
+1. Start the program.
+2. Input the travel budget in Indian Rupees (INR).
+3. Enter travel expense categories and their amounts in foreign currency.
+4. Input the exchange rate and conversion fee percentage.
+5. Convert each expense into INR and calculate the conversion fee.
+6. Calculate the total travel expenses, including fees.
+7. Compare total expenses with the budget.
+8. Identify the largest expense category.
+9. Display the expense summary, budget status, and largest expense.
+10. Stop the program.
 
-    try:
-        home_currency = input(
-            "Enter home currency (e.g., INR): "
-        ).strip().upper()
+#flow chart
 
-        budget = float(input("Enter total travel budget: Rs. "))
-        fee_percent = float(input("Enter conversion fee (%): "))
-        n = int(input("Enter number of expense categories: "))
-
-        if budget < 0 or not 0 <= fee_percent <= 100 or n <= 0:
-            print("Error: Invalid budget, fee, or category count.")
-            return
-
-        expenses = []
-        total_before_fees = 0
-        total_fees = 0
-
-        # Collect expenses and exchange rates
-        for i in range(n):
-            print(f"\nExpense Category {i + 1}")
-
-            category = input("Enter category name: ").strip()
-            currency = input(
-                "Enter expense currency (e.g., USD): "
-            ).strip().upper()
-
-            amount = float(input("Enter expense amount: "))
-            rate = float(input(
-                f"Enter exchange rate (1 {currency} = ? "
-                f"{home_currency}): "
-            ))
-
-            if not category or amount < 0 or rate <= 0:
-                print("Error: Invalid category, amount, or exchange rate.")
-                return
-
-            # Convert expense to home currency
-            converted_amount = amount * rate
-
-            # Calculate conversion fee
-            fee = converted_amount * fee_percent / 100
-            total_amount = converted_amount + fee
-
-            expenses.append({
-                "category": category,
-                "currency": currency,
-                "amount": amount,
-                "rate": rate,
-                "converted": converted_amount,
-                "fee": fee,
-                "total": total_amount
-            })
-
-            total_before_fees += converted_amount
-            total_fees += fee
-
-        # Total expenditure including conversion fees
-        total_spending = total_before_fees + total_fees
-        remaining_budget = budget - total_spending
-
-        # Identify the largest expense category
-        largest_expense = max(expenses, key=lambda x: x["total"])
-
-        # Display report
-        print("\n" + "=" * 90)
-        print("                    TRAVEL EXPENSE REPORT")
-        print("=" * 90)
-
-        print(f"{'Category':<16}{'Currency':<10}{'Original':>12}"
-              f"{'Converted':>15}{'Fee':>12}{'Total':>15}")
-        print("-" * 90)
-
-        for e in expenses:
-            print(
-                f"{e['category']:<16}"
-                f"{e['currency']:<10}"
-                f"{e['amount']:>12.2f}"
-                f"{e['converted']:>15.2f}"
-                f"{e['fee']:>12.2f}"
-                f"{e['total']:>15.2f}"
-            )
-
-        print("-" * 90)
-        print(f"Total Before Fees ({home_currency}): "
-              f"{total_before_fees:,.2f}")
-        print(f"Total Conversion Fees ({home_currency}): "
-              f"{total_fees:,.2f}")
-        print(f"Total Spending ({home_currency}): "
-              f"{total_spending:,.2f}")
-        print(f"Travel Budget ({home_currency}): {budget:,.2f}")
-
-        print("-" * 60)
-
-        if remaining_budget >= 0:
-            print(f"Budget Remaining: {remaining_budget:,.2f} "
-                  f"{home_currency}")
-            print("Status: WITHIN BUDGET")
-        else:
-            print(f"Budget Exceeded By: {-remaining_budget:,.2f} "
-                  f"{home_currency}")
-            print("Status: OVER BUDGET")
-
-        print(
-            f"Largest Expense Category: "
-            f"{largest_expense['category']} "
-            f"({largest_expense['total']:,.2f} {home_currency})"
-        )
-
-        print("=" * 90)
-
-    except ValueError:
-        print("Error: Please enter valid numeric values.")
+               ( START )
+                  |
+                  v
+       Input Travel Budget (INR)
+       Input Conversion Fee (%)
+                  |
+                  v
+       Enter Expense Amounts,
+       Currencies and Exchange Rates
+                  |
+                  v
+       Convert Expenses into INR
+                  |
+                  v
+       Calculate Conversion Fees
+                  |
+                  v
+       Calculate Total Expenses
+                  |
+                  v
+       Find Largest Expense Category
+                  |
+                  v
+         < Total > Budget? >
+             /        \
+           Yes         No
+            |           |
+            v           v
+      Print Budget   Print Remaining
+       Exceeded        Budget
+            \           /
+             v         v
+        Display Expense Summary
+                  |
+                  v
+               ( STOP )
+#code
 
 
-travel_budget_analysis()
+budget = float(input("Enter travel budget in INR: "))
+fee_rate = float(input("Enter conversion fee percentage: "))
+
+expenses = {
+    "Hotel": ("USD", 200, 85),
+    "Food": ("EUR", 100, 90),
+    "Shopping": ("USD", 80, 85)
+}
+
+total = 0
+category_totals = {}
+
+print("\n--- Travel Expense Summary ---")
+
+for category, (currency, amount, rate) in expenses.items():
+    converted = amount * rate
+    fee = converted * fee_rate / 100
+    final_amount = converted + fee
+
+    category_totals[category] = final_amount
+    total += final_amount
+
+    print(f"{category}: {currency} {amount}")
+    print(f"Converted with fee: Rs.{final_amount:.2f}")
+
+largest = max(category_totals, key=category_totals.get)
+
+print(f"\nTotal Expenses: Rs.{total:.2f}")
+print(f"Travel Budget: Rs.{budget:.2f}")
+print("Largest Expense:", largest)
+
+if total > budget:
+    print("Budget Exceeded")
+else:
+    print(f"Budget Remaining: Rs.{budget-total:.2f}")
+
+#sample output
+
+Enter travel budget in INR: 30000
+Enter conversion fee percentage: 2
+
+--- Travel Expense Summary ---
+Hotel: USD 200
+Converted with fee: Rs.17340.00
+Food: EUR 100
+Converted with fee: Rs.9180.00
+Shopping: USD 80
+Converted with fee: Rs.6936.00
+
+Total Expenses: Rs.33456.00
+Travel Budget: Rs.30000.00
+Largest Expense: Hotel
+Budget Exceeded
